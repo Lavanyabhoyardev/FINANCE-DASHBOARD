@@ -1,64 +1,95 @@
 /**
- * SummaryCard.jsx – A card that displays a financial summary metric
- * Props: title, value, icon, color, subtitle, trend
+ * SummaryCard.jsx – Premium KPI card with gradient, icon glow, and trend pill
+ * Props: title, value, icon, variant ('violet'|'emerald'|'rose'|'amber'), subtitle, trend
  */
 
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-export default function SummaryCard({ title, value, icon: Icon, color, subtitle, trend }) {
+export default function SummaryCard({ title, value, icon: Icon, variant = 'violet', subtitle, trend }) {
   const isPositive = trend >= 0;
 
-  return (
-    <div className="glass-card animate-fade-in" style={{ padding: 24 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <div>
-          <p style={{ color: 'var(--text-muted)', fontSize: 13, fontWeight: 500, marginBottom: 6 }}>
-            {title}
-          </p>
-          <p style={{
-            fontSize: 28, fontWeight: 700,
-            color: color || 'var(--text-primary)',
-            letterSpacing: '-0.5px',
-          }}>
-            {value}
-          </p>
-          {subtitle && (
-            <p style={{ color: 'var(--text-secondary)', fontSize: 12, marginTop: 4 }}>
-              {subtitle}
-            </p>
-          )}
-        </div>
+  const iconColors = {
+    violet: 'var(--violet-light)',
+    emerald: 'var(--emerald-light)',
+    rose:    'var(--rose-light)',
+    amber:   'var(--amber-light)',
+  };
 
-        {/* Icon bubble */}
-        <div style={{
-          width: 48, height: 48, borderRadius: 14,
-          background: `${color}20`,
-          border: `1px solid ${color}40`,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexShrink: 0,
+  const iconColor = iconColors[variant] || iconColors.violet;
+
+  return (
+    <div className={`kpi-card ${variant} animate-fade-in`}>
+
+      {/* Top row: label + icon */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+        <p style={{
+          color: 'var(--text-muted)',
+          fontSize: 12,
+          fontWeight: 700,
+          textTransform: 'uppercase',
+          letterSpacing: '0.07em',
+          fontFamily: 'Outfit, sans-serif',
         }}>
-          <Icon size={22} color={color} />
+          {title}
+        </p>
+
+        <div className={`icon-bubble ${variant}`}>
+          <Icon size={20} color={iconColor} strokeWidth={2} />
         </div>
       </div>
 
-      {/* Trend indicator */}
+      {/* Value */}
+      <p style={{
+        fontSize: 32,
+        fontWeight: 800,
+        fontFamily: 'Outfit, sans-serif',
+        color: 'var(--text-heading)',
+        letterSpacing: '-0.04em',
+        lineHeight: 1,
+        marginBottom: 6,
+      }}>
+        {value}
+      </p>
+
+      {/* Subtitle */}
+      {subtitle && (
+        <p style={{
+          color: 'var(--text-secondary)',
+          fontSize: 12,
+          marginBottom: 16,
+        }}>
+          {subtitle}
+        </p>
+      )}
+
+      {/* Trend */}
       {trend !== undefined && (
         <div style={{
-          display: 'flex', alignItems: 'center', gap: 4,
-          marginTop: 14, paddingTop: 14,
-          borderTop: '1px solid var(--border-color)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          borderTop: '1px solid var(--border-subtle)',
+          paddingTop: 12,
         }}>
-          {isPositive
-            ? <TrendingUp size={14} color="var(--accent-green)" />
-            : <TrendingDown size={14} color="var(--accent-red)" />
-          }
-          <span style={{
-            fontSize: 12, fontWeight: 600,
-            color: isPositive ? 'var(--accent-green)' : 'var(--accent-red)',
-          }}>
-            {isPositive ? '+' : ''}{trend}%
-          </span>
-          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>vs last month</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <span className={`trend-pill ${isPositive ? 'up' : 'down'}`}>
+              {isPositive
+                ? <ArrowUpRight size={11} />
+                : <ArrowDownRight size={11} />
+              }
+              {isPositive ? '+' : ''}{trend}%
+            </span>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+              vs last month
+            </span>
+          </div>
+
+          <div style={{ opacity: 0.4 }}>
+            {isPositive
+              ? <TrendingUp size={14} color="var(--emerald-light)" />
+              : <TrendingDown size={14} color="var(--rose-light)" />
+            }
+          </div>
         </div>
       )}
     </div>

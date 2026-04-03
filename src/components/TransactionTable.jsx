@@ -1,11 +1,11 @@
 /**
- * TransactionTable.jsx – Sortable, filterable transaction list with admin CRUD actions
+ * TransactionTable.jsx – Premium table with zebra striping, category pills, row glow, CRUD
  */
 
 import { useState } from 'react';
-import { Pencil, Trash2, ChevronUp, ChevronDown, Plus, RotateCcw } from 'lucide-react';
+import { Pencil, Trash2, ChevronUp, ChevronDown, Plus, RotateCcw, Download } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { filterTransactions, sortTransactions, formatCurrency, formatDate, exportToCSV } from '../utils/helpers';
+import { filterTransactions, sortTransactions, formatCurrency, exportToCSV } from '../utils/helpers';
 import { allCategories, categoryColors } from '../data/mockData';
 import EmptyState from './EmptyState';
 
@@ -34,57 +34,83 @@ function TransactionModal({ existing, onClose, onSave }) {
   return (
     <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="modal-box">
-        <h3 style={{ fontWeight: 700, fontSize: 18, marginBottom: 20, color: 'var(--text-primary)' }}>
-          {existing ? '✏️ Edit Transaction' : '➕ Add Transaction'}
-        </h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 }}>
+          <div>
+            <h3 style={{ fontWeight: 800, fontSize: 20, fontFamily: 'Outfit,sans-serif', color: 'var(--text-heading)' }}>
+              {existing ? '✏️ Edit Transaction' : '➕ Add Transaction'}
+            </h3>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>
+              {existing ? 'Modify the transaction details' : 'Fill in transaction details'}
+            </p>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-          {/* Date */}
+          {/* Type toggle */}
+          <div>
+            <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 8, fontFamily: 'Outfit,sans-serif' }}>Type</p>
+            <div style={{ display: 'flex', gap: 8 }}>
+              {['income', 'expense'].map(t => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, type: t }))}
+                  style={{
+                    flex: 1, padding: '9px', borderRadius: 'var(--radius-md)',
+                    border: '1px solid', fontSize: 13, fontWeight: 600,
+                    fontFamily: 'Outfit,sans-serif', cursor: 'pointer', transition: 'all 0.2s ease',
+                    ...(form.type === t
+                      ? t === 'income'
+                        ? { background: 'var(--emerald-dim)', borderColor: 'rgba(52,211,153,0.4)', color: 'var(--emerald-light)' }
+                        : { background: 'var(--rose-dim)', borderColor: 'rgba(251,113,133,0.4)', color: 'var(--rose-light)' }
+                      : { background: 'var(--bg-surface)', borderColor: 'var(--border-color)', color: 'var(--text-secondary)' }
+                    ),
+                  }}
+                >
+                  {t === 'income' ? '↑ Income' : '↓ Expense'}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>DATE</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'Outfit,sans-serif' }}>Date</span>
             <input type="date" className="input-field" value={form.date}
               onChange={e => setForm(f => ({ ...f, date: e.target.value }))} required />
           </label>
 
-          {/* Amount */}
           <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>AMOUNT ($)</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'Outfit,sans-serif' }}>Amount ($)</span>
             <input type="number" className="input-field" placeholder="0.00" value={form.amount} min="0" step="0.01"
               onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} required />
           </label>
 
-          {/* Category */}
           <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>CATEGORY</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'Outfit,sans-serif' }}>Category</span>
             <select className="input-field" value={form.category}
               onChange={e => setForm(f => ({ ...f, category: e.target.value }))}>
               {allCategories.map(c => <option key={c} value={c}>{c}</option>)}
             </select>
           </label>
 
-          {/* Type */}
           <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>TYPE</span>
-            <select className="input-field" value={form.type}
-              onChange={e => setForm(f => ({ ...f, type: e.target.value }))}>
-              <option value="income">Income</option>
-              <option value="expense">Expense</option>
-            </select>
-          </label>
-
-          {/* Description */}
-          <label style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)' }}>DESCRIPTION</span>
+            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.07em', fontFamily: 'Outfit,sans-serif' }}>Description</span>
             <input type="text" className="input-field" placeholder="Optional note…" value={form.description}
               onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
           </label>
 
-          {error && <p style={{ color: 'var(--accent-red)', fontSize: 13 }}>{error}</p>}
+          {error && (
+            <p style={{
+              color: 'var(--rose-light)', fontSize: 13,
+              background: 'var(--rose-dim)', padding: '8px 12px',
+              borderRadius: 'var(--radius-sm)', border: '1px solid rgba(251,113,133,0.2)',
+            }}>
+              {error}
+            </p>
+          )}
 
-          <div style={{ display: 'flex', gap: 10, marginTop: 6 }}>
-            <button type="button" className="btn-secondary" onClick={onClose} style={{ flex: 1 }}>
-              Cancel
-            </button>
+          <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
+            <button type="button" className="btn-secondary" onClick={onClose} style={{ flex: 1 }}>Cancel</button>
             <button type="submit" className="btn-primary" style={{ flex: 1 }}>
               {existing ? 'Save Changes' : 'Add Transaction'}
             </button>
@@ -95,19 +121,19 @@ function TransactionModal({ existing, onClose, onSave }) {
   );
 }
 
-// ── Sort Header Cell ─────────────────────────────────────────────────────────
+// ── Sort Header ─────────────────────────────────────────────────────────────
 function SortTh({ label, field, sortField, sortDir, onSort }) {
   const active = sortField === field;
   return (
     <th style={{ cursor: 'pointer', userSelect: 'none' }} onClick={() => onSort(field)}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
         {label}
-        {active
-          ? sortDir === 'asc'
-            ? <ChevronUp size={13} color="var(--accent-blue-light)" />
-            : <ChevronDown size={13} color="var(--accent-blue-light)" />
-          : <ChevronDown size={13} color="var(--text-muted)" />
-        }
+        <span style={{ opacity: active ? 1 : 0.3, transition: 'opacity 0.2s' }}>
+          {active && sortDir === 'asc'
+            ? <ChevronUp size={12} color="var(--violet-light)" />
+            : <ChevronDown size={12} color={active ? 'var(--violet-light)' : 'var(--text-muted)'} />
+          }
+        </span>
       </div>
     </th>
   );
@@ -121,11 +147,10 @@ export default function TransactionTable({ showFiltersBar = false }) {
     resetToMockData,
   } = useApp();
 
-  const [editTarget, setEditTarget] = useState(null);   // existing tx for edit
-  const [showAdd, setShowAdd]       = useState(false);  // add new modal
-  const [deleteId, setDeleteId]     = useState(null);   // confirm delete id
+  const [editTarget, setEditTarget] = useState(null);
+  const [showAdd, setShowAdd]       = useState(false);
+  const [deleteId, setDeleteId]     = useState(null);
 
-  // Filter → Sort
   const filtered = filterTransactions(transactions, { search, type: filter, dateFrom, dateTo });
   const sorted   = sortTransactions(filtered, sortField, sortDir);
 
@@ -137,30 +162,52 @@ export default function TransactionTable({ showFiltersBar = false }) {
     }
   };
 
-  const categoryDot = cat => (
-    <span style={{
-      display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
-      background: categoryColors[cat] || '#6366f1', marginRight: 7, flexShrink: 0,
-    }} />
-  );
-
   return (
     <div>
-      {/* Toolbar row */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flex: 1, flexWrap: 'wrap', gap: 10, marginBottom: 16 }}>
-        <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
-          Showing <strong style={{ color: 'var(--text-primary)' }}>{sorted.length}</strong> of {transactions.length} transactions
-        </p>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn-secondary" onClick={() => exportToCSV(sorted)} style={{ fontSize: 12, padding: '6px 12px' }}>
-            ⬇ Export CSV
+      {/* Toolbar */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        gap: 12,
+        marginBottom: 16,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+            Showing{' '}
+            <strong style={{ color: 'var(--violet-light)', fontFamily: 'Outfit,sans-serif', fontSize: 15 }}>
+              {sorted.length}
+            </strong>
+            {' '}of{' '}
+            <strong style={{ color: 'var(--text-primary)' }}>{transactions.length}</strong>
+            {' '}transactions
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button
+            className="btn-secondary"
+            onClick={() => exportToCSV(sorted)}
+            style={{ fontSize: 12, padding: '6px 12px', gap: 5 }}
+          >
+            <Download size={13} /> Export CSV
           </button>
+
           {isAdmin && (
             <>
-              <button className="btn-secondary" style={{ fontSize: 12, padding: '6px 12px' }} onClick={resetToMockData}>
+              <button
+                className="btn-secondary"
+                style={{ fontSize: 12, padding: '6px 12px', gap: 5 }}
+                onClick={resetToMockData}
+              >
                 <RotateCcw size={13} /> Reset Data
               </button>
-              <button className="btn-primary" onClick={() => setShowAdd(true)} style={{ fontSize: 13 }}>
+              <button
+                className="btn-primary"
+                onClick={() => setShowAdd(true)}
+                style={{ fontSize: 13 }}
+              >
                 <Plus size={14} /> Add Transaction
               </button>
             </>
@@ -169,77 +216,106 @@ export default function TransactionTable({ showFiltersBar = false }) {
       </div>
 
       {/* Table */}
-      <div style={{ overflowX: 'auto', borderRadius: 14, border: '1px solid var(--border-color)' }}>
+      <div style={{
+        overflowX: 'auto',
+        borderRadius: 'var(--radius-lg)',
+        border: '1px solid var(--border-color)',
+        background: 'var(--bg-card)',
+      }}>
         {sorted.length === 0 ? (
           <EmptyState />
         ) : (
           <table className="data-table">
             <thead>
               <tr>
-                <SortTh label="Date"     field="date"     sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <SortTh label="Date"   field="date"   sortField={sortField} sortDir={sortDir} onSort={handleSort} />
                 <th>Category</th>
                 <th>Description</th>
-                <SortTh label="Amount"   field="amount"   sortField={sortField} sortDir={sortDir} onSort={handleSort} />
+                <SortTh label="Amount" field="amount" sortField={sortField} sortDir={sortDir} onSort={handleSort} />
                 <th>Type</th>
                 {isAdmin && <th>Actions</th>}
               </tr>
             </thead>
             <tbody>
-              {sorted.map(tx => (
-                <tr key={tx.id}>
-                  <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontSize: 13 }}>
-                    {new Date(tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      {categoryDot(tx.category)}
-                      <span style={{ fontWeight: 500 }}>{tx.category}</span>
-                    </div>
-                  </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: 13, maxWidth: 200 }}>
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
-                      {tx.description || '—'}
-                    </span>
-                  </td>
-                  <td style={{
-                    fontWeight: 600,
-                    color: tx.type === 'income' ? 'var(--accent-green)' : 'var(--accent-red)',
-                  }}>
-                    {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
-                  </td>
-                  <td>
-                    <span className={`badge badge-${tx.type}`}>
-                      {tx.type === 'income' ? '↑' : '↓'} {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
-                    </span>
-                  </td>
-                  {isAdmin && (
-                    <td>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button
-                          onClick={() => setEditTarget(tx)}
-                          style={{
-                            background: 'rgba(99,102,241,0.12)', color: 'var(--accent-blue-light)',
-                            border: '1px solid rgba(99,102,241,0.3)', borderRadius: 7,
-                            padding: '5px 8px', cursor: 'pointer', display: 'flex', alignItems: 'center',
-                            transition: 'all 0.2s ease',
-                          }}
-                          title="Edit"
-                        >
-                          <Pencil size={13} />
-                        </button>
-                        <button
-                          className="btn-danger"
-                          onClick={() => setDeleteId(tx.id)}
-                          style={{ padding: '5px 8px', display: 'flex', alignItems: 'center' }}
-                          title="Delete"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
+              {sorted.map(tx => {
+                const catColor = categoryColors[tx.category] || '#7c3aed';
+                return (
+                  <tr key={tx.id}>
+                    <td style={{ whiteSpace: 'nowrap', color: 'var(--text-secondary)', fontSize: 13 }}>
+                      {new Date(tx.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
-                  )}
-                </tr>
-              ))}
+                    <td>
+                      <span
+                        className="badge-cat"
+                        style={{
+                          background: `${catColor}18`,
+                          color: catColor,
+                          borderColor: `${catColor}30`,
+                        }}
+                      >
+                        <span style={{
+                          width: 6, height: 6, borderRadius: '50%',
+                          background: catColor,
+                          display: 'inline-block',
+                          flexShrink: 0,
+                          boxShadow: `0 0 4px ${catColor}`,
+                        }} />
+                        {tx.category}
+                      </span>
+                    </td>
+                    <td style={{ color: 'var(--text-secondary)', fontSize: 13, maxWidth: 220 }}>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>
+                        {tx.description || '—'}
+                      </span>
+                    </td>
+                    <td style={{
+                      fontWeight: 700,
+                      fontFamily: 'Outfit, sans-serif',
+                      fontSize: 15,
+                      color: tx.type === 'income' ? 'var(--emerald-light)' : 'var(--rose-light)',
+                    }}>
+                      {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
+                    </td>
+                    <td>
+                      <span className={`badge badge-${tx.type}`}>
+                        {tx.type === 'income' ? '↑' : '↓'} {tx.type.charAt(0).toUpperCase() + tx.type.slice(1)}
+                      </span>
+                    </td>
+                    {isAdmin && (
+                      <td>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          {/* Edit */}
+                          <button
+                            onClick={() => setEditTarget(tx)}
+                            className="btn-icon"
+                            style={{
+                              background: 'rgba(124,58,237,0.1)',
+                              borderColor: 'rgba(124,58,237,0.2)',
+                              color: 'var(--violet-light)',
+                            }}
+                            title="Edit"
+                          >
+                            <Pencil size={13} />
+                          </button>
+                          {/* Delete */}
+                          <button
+                            className="btn-icon"
+                            onClick={() => setDeleteId(tx.id)}
+                            style={{
+                              background: 'rgba(190,24,93,0.1)',
+                              borderColor: 'rgba(251,113,133,0.2)',
+                              color: 'var(--rose-light)',
+                            }}
+                            title="Delete"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
@@ -247,31 +323,35 @@ export default function TransactionTable({ showFiltersBar = false }) {
 
       {/* Add Modal */}
       {showAdd && (
-        <TransactionModal
-          onClose={() => setShowAdd(false)}
-          onSave={addTransaction}
-        />
+        <TransactionModal onClose={() => setShowAdd(false)} onSave={addTransaction} />
       )}
 
       {/* Edit Modal */}
       {editTarget && (
-        <TransactionModal
-          existing={editTarget}
-          onClose={() => setEditTarget(null)}
-          onSave={editTransaction}
-        />
+        <TransactionModal existing={editTarget} onClose={() => setEditTarget(null)} onSave={editTransaction} />
       )}
 
-      {/* Delete Confirm Modal */}
+      {/* Delete Confirm */}
       {deleteId !== null && (
         <div className="modal-backdrop" onClick={e => e.target === e.currentTarget && setDeleteId(null)}>
           <div className="modal-box" style={{ maxWidth: 380 }}>
-            <h3 style={{ fontWeight: 700, fontSize: 17, color: 'var(--text-primary)', marginBottom: 10 }}>
-              🗑️ Delete Transaction
-            </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 14, marginBottom: 22 }}>
-              Are you sure you want to delete this transaction? This action cannot be undone.
-            </p>
+            <div style={{ textAlign: 'center', marginBottom: 20 }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: 16,
+                background: 'var(--rose-dim)',
+                border: '1px solid rgba(251,113,133,0.25)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                margin: '0 auto 16px',
+              }}>
+                <Trash2 size={24} color="var(--rose-light)" />
+              </div>
+              <h3 style={{ fontWeight: 800, fontSize: 18, color: 'var(--text-heading)', fontFamily: 'Outfit,sans-serif', marginBottom: 8 }}>
+                Delete Transaction?
+              </h3>
+              <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
+                This action cannot be undone. The transaction will be permanently removed.
+              </p>
+            </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button className="btn-secondary" onClick={() => setDeleteId(null)} style={{ flex: 1 }}>
                 Cancel
@@ -279,7 +359,7 @@ export default function TransactionTable({ showFiltersBar = false }) {
               <button
                 className="btn-danger"
                 onClick={() => { deleteTransaction(deleteId); setDeleteId(null); }}
-                style={{ flex: 1, padding: '8px 16px', fontWeight: 600 }}
+                style={{ flex: 1, padding: '9px 16px', fontWeight: 700, fontSize: 14 }}
               >
                 Yes, Delete
               </button>
