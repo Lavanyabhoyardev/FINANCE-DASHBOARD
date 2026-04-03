@@ -1,3 +1,4 @@
+
 # FinanceIQ – Smart Finance Dashboard
 
 > This project is designed with scalability in mind and can be easily extended with backend APIs in the future.
@@ -16,19 +17,19 @@ Run locally by following the [Setup Instructions](#️-setup-instructions).
 
 ### Dashboard — Financial Overview
 
-![Dashboard View](./public/screenshots/dashboard.png)
+![Dashboard View]( ./public/screenshots/dashboard.png.png )
 
 > Summary cards, balance trend area chart, and spending breakdown donut chart.
 
 ### Transactions — Full Management Table
 
-![Transactions Page](./public/screenshots/transactions.png)
+![Transactions Page]( ./public/screenshots/transactionsPage.png)
 
 > Sortable, filterable table with Admin CRUD controls, search, date range, and CSV export.
 
 ### Insights — Spending Analytics
 
-![Insights Page](./public/screenshots/insights.png)
+![Insights Page](./public/screenshots/Insight.png.png)
 
 > Monthly income vs expense bar chart, category progress bars, savings rate, and a personalised financial tip.
 
@@ -252,7 +253,7 @@ npm run build
 npm run deploy
 ```
 
-> 🔗   Live URL:    (Add your deployment link here after deploying) 
+> 🔗   Live URL: https://finance-dashboard-azure-delta-77.vercel.app/
 
 ---
 
@@ -262,7 +263,6 @@ This project is open source and available under the [MIT License](./LICENSE).
 
 ---
 
- This project represents a practical demonstration of frontend engineering fundamentals — component design, state management, accessibility, and user experience — built to a professional standard suitable for production environments. 
-#   F I N A N C E - D A S H B O A R D 
- 
- 
+This project represents a practical demonstration of frontend engineering fundamentals — component design, state management, accessibility, and user experience — built to a professional standard suitable for production environments.
+
+# FINANCE-DASHBOARD
