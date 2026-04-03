@@ -252,7 +252,7 @@ npm run build
 npm run deploy
 ```
 
-> 🔗   Live URL:    (Add your deployment link here after deploying)
+> 🔗   Live URL: https://finance-dashboard-azure-delta-77.vercel.app/
 
 ---
 
