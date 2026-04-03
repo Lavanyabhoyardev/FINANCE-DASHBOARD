@@ -22,7 +22,7 @@ Run locally by following the [Setup Instructions](#️-setup-instructions).
 
 ### Transactions — Full Management Table
 
-![Transactions Page]( ./public/screenshots/ransactions.Page.png)
+![Transactions Page]( ./public/screenshots/transactionsPage.png)
 
 > Sortable, filterable table with Admin CRUD controls, search, date range, and CSV export.
 
