@@ -8,7 +8,7 @@ FinanceIQ is a production-quality, fully responsive Finance Dashboard built with
 
 ## 🚀 Live Preview
 
-> 🔗[Live Demo] — (Deploy link — see [Deployment](#-deployment) section below)
+> 🔗[Live Demo] — (Deploy link — see [Deployment](#-https://finance-dashboard-azure-delta-77.vercel.app/) section below)
 
 Run locally by following the [Setup Instructions](#️-setup-instructions).
 
