@@ -8,7 +8,7 @@ FinanceIQ is a production-quality, fully responsive Finance Dashboard built with
 
 ## 🚀 Live Preview
 
-> 🔗[Live Demo] — (Deploy link — see [Deployment](#-deployment) section below)
+> 🔗[Live Demo] — (Deploy link — see [Deployment](#-https://finance-dashboard-azure-delta-77.vercel.app/) section below)
 
 Run locally by following the [Setup Instructions](#️-setup-instructions).
 
@@ -252,7 +252,7 @@ npm run build
 npm run deploy
 ```
 
-> 🔗   Live URL:    (Add your deployment link here after deploying)
+> 🔗   Live URL:    (Add your deployment link here after deploying) 
 
 ---
 
@@ -262,6 +262,7 @@ This project is open source and available under the [MIT License](./LICENSE).
 
 ---
 
-This project represents a practical demonstration of frontend engineering fundamentals — component design, state management, accessibility, and user experience — built to a professional standard suitable for production environments.
-
-# FINANCE-DASHBOARD
+ This project represents a practical demonstration of frontend engineering fundamentals — component design, state management, accessibility, and user experience — built to a professional standard suitable for production environments. 
+#   F I N A N C E - D A S H B O A R D 
+ 
+ 
