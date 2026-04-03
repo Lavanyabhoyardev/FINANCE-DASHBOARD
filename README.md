@@ -22,13 +22,13 @@ Run locally by following the [Setup Instructions](#️-setup-instructions).
 
 ### Transactions — Full Management Table
 
-![Transactions Page](./public/screenshots/transactions.png)
+![Transactions Page]( ./public/screenshots/ransactions.Page.png)
 
 > Sortable, filterable table with Admin CRUD controls, search, date range, and CSV export.
 
 ### Insights — Spending Analytics
 
-![Insights Page](./public/screenshots/insights.png)
+![Insights Page](./public/screenshots/Insight.png.png)
 
 > Monthly income vs expense bar chart, category progress bars, savings rate, and a personalised financial tip.
 
