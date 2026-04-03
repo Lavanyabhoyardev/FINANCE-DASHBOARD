@@ -16,7 +16,7 @@ Run locally by following the [Setup Instructions](#️-setup-instructions).
 
 ### Dashboard — Financial Overview
 
-![Dashboard View](./public/screenshots/dashboard.png)
+![Dashboard View]( ./public/screenshots/dashboard.png.png )
 
 > Summary cards, balance trend area chart, and spending breakdown donut chart.
 
